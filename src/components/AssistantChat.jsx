@@ -38,7 +38,7 @@ export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }
     }
 
     if (!apiKey) {
-      setError("Please enter your Gemini API Key in the top right corner to chat.");
+      setError("Vault is locked. Connect MetaMask and unlock your vault in the top right to enable the AI.");
       return;
     }
     

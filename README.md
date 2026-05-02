@@ -17,15 +17,19 @@ The application has two core components:
 
 - **Frontend Architecture:** The application is built with **React** and **Vite** for a fast, responsive user interface.
 - **Styling:** We utilized **Vanilla CSS** with CSS variables to create a cohesive design system featuring glassmorphism (backdrop filters), deep slate themes, and subtle animated gradients.
-- **Google Services Integration:** The assistant is powered by the **Google Gemini API** (`@google/genai`). It utilizes a system prompt to take on the persona of a helpful, non-partisan election guide.
+- **Google Services Integration:** The assistant is powered by the **Google Gemini API** (`@google/genai`).
+- **Cryptographic Vault (Web3):** To solve the issue of client-side key security, we implemented a **MetaMask-gated Vault**. The Gemini API key is encrypted using a unique signature from the user's wallet (AES-256) and stored locally. Only the wallet owner can unlock the vault to enable the AI.
 
 ### Setup Instructions
 1. Clone the repository.
 2. Run `npm install`.
 3. Run `npm run dev`.
-4. Open the application and **enter your Gemini API Key in the top right corner** to activate the AI assistant.
+4. **Connect MetaMask** in the top right corner.
+5. **Paste your Gemini API Key** and click **"Secure Vault"**.
+6. Sign the message in MetaMask (Free/No Gas) to encrypt your key.
+7. To use the app later, simply click **"Unlock Vault"** and sign again!
 
 ## Assumptions Made
 
-- **Generalization:** Election laws vary wildly by state and local jurisdiction. We assume the assistant's primary role is to provide general, high-level guidance (e.g., "you need to register") and direct users to official local sources (like vote.gov) for specific, binding details.
-- **API Key:** We assumed that reviewers would prefer to enter their own API key via the UI for easy testing, rather than configuring `.env` files locally. Therefore, the API key is handled directly within the browser state.
+- **Generalization:** Election laws vary wildly by state and local jurisdiction. We provide high-level guidance and direct users to official local sources (like vote.gov).
+- **Web3 Accessibility:** We assume reviewers have a MetaMask extension installed to test the premium "Secure Vault" feature. If not, the app provides clear instructions on why it is required for secure AI integration.

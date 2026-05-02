@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Timeline from './components/Timeline';
 import AssistantChat from './components/AssistantChat';
+import VaultUI from './components/VaultUI';
 
 function App() {
   const [activeStep, setActiveStep] = useState(null);
@@ -16,6 +17,14 @@ function App() {
     setTimeout(() => setActivePrompt(''), 100);
   };
 
+  const handleUnlock = (key) => {
+    setApiKey(key);
+  };
+
+  const handleLock = () => {
+    setApiKey('');
+  };
+
   return (
     <div className="app-container">
       <header className="app-header">
@@ -24,14 +33,7 @@ function App() {
             <p>Your interactive guide to the voting process</p>
         </div>
         <div className="api-key-container">
-            <input 
-                type="password" 
-                placeholder="Enter Gemini API Key..." 
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                className="api-key-input"
-                title="Enter your Google Gemini API Key to enable the AI"
-            />
+            <VaultUI onUnlock={handleUnlock} onLock={handleLock} />
         </div>
       </header>
 

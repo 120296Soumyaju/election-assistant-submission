@@ -80,12 +80,48 @@ body {
   animation: fadeInDown 0.8s ease-out;
 }
 
-.api-key-container {
-    display: flex;
-    align-items: center;
+.vault-ui-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-.api-key-input {
+.vault-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-main);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid var(--color-border);
+}
+
+.vault-btn.connect {
+  background: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.vault-btn.connect:hover {
+  background: rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 15px var(--color-primary-glow);
+}
+
+.vault-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.vault-input-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.vault-api-input {
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid var(--color-border);
     color: var(--color-text);
@@ -93,14 +129,47 @@ body {
     border-radius: var(--radius-full);
     font-family: var(--font-main);
     outline: none;
-    transition: all var(--transition-fast);
-    width: 250px;
+    width: 200px;
 }
 
-.api-key-input:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 10px var(--color-primary-glow);
-    width: 300px;
+.vault-btn.action {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+}
+
+.vault-btn.action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px var(--color-primary-glow);
+}
+
+.vault-status {
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.address-badge {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: #4ade80;
+}
+
+.reset-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.reset-btn:hover {
+    color: var(--color-secondary);
 }
 
 h1 {
