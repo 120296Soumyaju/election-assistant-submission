@@ -73,8 +73,9 @@ export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }
       const responseText = result.response.text();
       setMessages(prev => [...prev, { text: responseText, sender: 'bot', id: Date.now() + 1 }]);
     } catch (err) {
-      console.error(err);
-      setError("Error connecting to Gemini API. Please check your API key and try again.");
+      console.error('Gemini Error:', err);
+      const errorMessage = err.message || "Unknown error connecting to Gemini API.";
+      setError(`Gemini Error: ${errorMessage}. Please check your API key and quota.`);
     } finally {
       setIsTyping(false);
     }
