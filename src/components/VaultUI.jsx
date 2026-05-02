@@ -68,7 +68,7 @@ export default function VaultUI({ onUnlock, onLock }) {
   };
 
   return (
-    <div className="vault-ui-wrapper glass">
+    <div className="vault-ui-wrapper">
       {!walletAddress ? (
         <button onClick={connectWallet} className="vault-btn connect">
           <Wallet size={18} />
