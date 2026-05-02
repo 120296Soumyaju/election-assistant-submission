@@ -29,7 +29,7 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <div>
-            <h1>Election Assistant</h1>
+            <h1>VoterVault AI</h1>
             <p>Your interactive guide to the voting process</p>
         </div>
         <div className="api-key-container">

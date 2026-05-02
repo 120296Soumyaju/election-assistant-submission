@@ -9,7 +9,7 @@ Do not endorse any political party or candidate.`;
 
 export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }) {
   const [messages, setMessages] = useState([
-    { text: "I'm your Election Assistant! I can help you understand voter registration, deadlines, and what to expect on Election Day. How can I help you today?", sender: 'bot', id: 1 }
+    { text: "I'm your VoterVault AI! I can help you understand voter registration, deadlines, and what to expect on Election Day. How can I help you today?", sender: 'bot', id: 1 }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -88,8 +88,8 @@ export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }
           <Bot size={20} color="white" />
         </div>
         <div>
-          <h2>Election Assistant AI</h2>
-          <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Powered by Gemini</p>
+          <h2>VoterVault AI</h2>
+          <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Secure Voter Guidance</p>
         </div>
       </div>
       
