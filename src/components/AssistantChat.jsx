@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Bot, User, AlertCircle } from 'lucide-react';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const SYSTEM_INSTRUCTION = `You are an expert, non-partisan Election Assistant. 
 Your goal is to help users understand the US electoral process, registration deadlines, early voting, and how to research candidates. 
@@ -49,7 +49,7 @@ export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }
     setIsTyping(true);
 
     try {
-      const genAI = new GoogleGenAI(apiKey);
+      const genAI = new GoogleGenerativeAI(apiKey.trim());
       const model = genAI.getGenerativeModel({ 
         model: "gemini-1.5-flash",
         systemInstruction: SYSTEM_INSTRUCTION 
