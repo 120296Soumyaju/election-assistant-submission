@@ -49,29 +49,28 @@ export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }
     setIsTyping(true);
 
     try {
-      // Initialize the Gemini client
-      const ai = new GoogleGenAI({ apiKey: apiKey });
+      const genAI = new GoogleGenAI(apiKey);
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash",
+        systemInstruction: SYSTEM_INSTRUCTION 
+      });
       
-      // We pass the conversation history to provide context
       const chatHistory = messages.filter(m => m.id !== 1).map(m => ({
           role: m.sender === 'bot' ? 'model' : 'user',
-          parts: [{text: m.text}]
+          parts: [{ text: m.text }]
       }));
 
-      // In the new SDK for Node/Browser, generating content:
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+      const result = await model.generateContent({
         contents: [
-            ...chatHistory,
-            { role: 'user', parts: [{ text: text }] }
+          ...chatHistory,
+          { role: 'user', parts: [{ text: text }] }
         ],
-        config: {
-            systemInstruction: SYSTEM_INSTRUCTION,
-            temperature: 0.2, // Keep it factual
+        generationConfig: {
+          temperature: 0.2,
         }
       });
 
-      const responseText = response.text || "I'm sorry, I couldn't generate a response.";
+      const responseText = result.response.text();
       setMessages(prev => [...prev, { text: responseText, sender: 'bot', id: Date.now() + 1 }]);
     } catch (err) {
       console.error(err);
