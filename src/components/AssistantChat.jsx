@@ -50,10 +50,7 @@ export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }
 
     try {
       const genAI = new GoogleGenerativeAI(apiKey.trim());
-      const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
-        systemInstruction: SYSTEM_INSTRUCTION 
-      });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
       
       const chatHistory = messages.filter(m => m.id !== 1).map(m => ({
           role: m.sender === 'bot' ? 'model' : 'user',
@@ -62,6 +59,8 @@ export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }
 
       const result = await model.generateContent({
         contents: [
+          { role: 'user', parts: [{ text: `SYSTEM INSTRUCTION: ${SYSTEM_INSTRUCTION}` }] },
+          { role: 'model', parts: [{ text: "Understood. I am now VoterVault AI, your non-partisan guide." }] },
           ...chatHistory,
           { role: 'user', parts: [{ text: text }] }
         ],
