@@ -49,6 +49,9 @@ export default function Timeline({ activeStep, onStepClick }) {
           key={step.id} 
           className={`timeline-step ${activeStep === index ? 'active' : ''}`}
           onClick={() => onStepClick(index, step.prompt)}
+          style={{ 
+            animation: `fadeInDown 0.6s ease-out ${index * 0.1}s both` 
+          }}
         >
           <div className="step-indicator">
             {step.icon}
