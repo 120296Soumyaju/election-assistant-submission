@@ -28,9 +28,12 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <div>
-            <h1>VoterVault AI</h1>
-            <p>Your interactive guide to the voting process</p>
+        <div className="header-brand">
+            <img src="/favicon.png" alt="VoterVault Logo" className="header-logo" />
+            <div>
+                <h1>VoterVault AI</h1>
+                <p>Your interactive guide to the voting process</p>
+            </div>
         </div>
         <div className="api-key-container">
             <VaultUI onUnlock={handleUnlock} onLock={handleLock} />
