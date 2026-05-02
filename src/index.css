@@ -71,11 +71,36 @@ body {
   align-items: start;
 }
 
-header {
+.app-header {
   grid-column: 1 / -1;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 2rem;
   animation: fadeInDown 0.8s ease-out;
+}
+
+.api-key-container {
+    display: flex;
+    align-items: center;
+}
+
+.api-key-input {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-full);
+    font-family: var(--font-main);
+    outline: none;
+    transition: all var(--transition-fast);
+    width: 250px;
+}
+
+.api-key-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 10px var(--color-primary-glow);
+    width: 300px;
 }
 
 h1 {

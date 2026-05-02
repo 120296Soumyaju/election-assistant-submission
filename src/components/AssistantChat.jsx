@@ -1,21 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, User } from 'lucide-react';
+import { Send, Bot, User, AlertCircle } from 'lucide-react';
+import { GoogleGenAI } from '@google/genai';
 
-const simulatedResponses = {
-  default: "I'm your Election Assistant! I can help you understand voter registration, deadlines, and what to expect on Election Day. How can I help you today?",
-  register: "To register to vote, you typically need to be a U.S. citizen, meet your state's residency requirements, and be 18 years old on or before Election Day. You can usually register online, by mail, or in person at your local election office. Deadlines vary wildly by state (from 30 days before to same-day registration), so it's critical to check your specific state's rules at vote.gov.",
-  research: "Finding unbiased information is key. Start with non-partisan organizations like the League of Women Voters (VOTE411.org) or Ballotpedia. They provide sample ballots and candidate stances without endorsing anyone. You can also check local news sources and candidate debates.",
-  early: "Many states offer early voting in person, allowing you to vote days or weeks before Election Day. Mail-in (or absentee) voting allows you to receive a ballot by mail. Some states require an excuse to vote by mail, while others have 'no-excuse' absentee voting. Always check your state's specific deadlines for requesting and returning mail-in ballots.",
-  "election-day": "On Election Day, polls are usually open from early morning (around 6 or 7 AM) until evening (7 or 8 PM). If you are in line when the polls close, STAY IN LINE; you have the right to vote. Depending on your state, you may need to bring a photo ID or a utility bill as proof of residence.",
-  results: "Official election results are rarely finalized on Election night. Media outlets project winners based on exit polls and early returns, but official certification happens days or weeks later after all mail-in, provisional, and overseas ballots are counted by local election officials.",
-};
+const SYSTEM_INSTRUCTION = `You are an expert, non-partisan Election Assistant. 
+Your goal is to help users understand the US electoral process, registration deadlines, early voting, and how to research candidates. 
+Keep your answers concise, encouraging, and factual. Always direct users to official state resources or vote.gov for binding specific information.
+Do not endorse any political party or candidate.`;
 
-export default function AssistantChat({ activePrompt, setHasInteracted }) {
+export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }) {
   const [messages, setMessages] = useState([
-    { text: simulatedResponses.default, sender: 'bot', id: 1 }
+    { text: "I'm your Election Assistant! I can help you understand voter registration, deadlines, and what to expect on Election Day. How can I help you today?", sender: 'bot', id: 1 }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [error, setError] = useState('');
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -24,7 +22,7 @@ export default function AssistantChat({ activePrompt, setHasInteracted }) {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isTyping]);
+  }, [messages, isTyping, error]);
 
   useEffect(() => {
     if (activePrompt) {
@@ -32,40 +30,55 @@ export default function AssistantChat({ activePrompt, setHasInteracted }) {
     }
   }, [activePrompt]);
 
-  const handleSend = (text, isAutomated = false) => {
+  const handleSend = async (text, isAutomated = false) => {
     if (!text.trim()) return;
     
     if (!isAutomated) {
         setHasInteracted(true);
     }
 
+    if (!apiKey) {
+      setError("Please enter your Gemini API Key in the top right corner to chat.");
+      return;
+    }
+    
+    setError('');
     const newUserMsg = { text, sender: 'user', id: Date.now() };
     setMessages(prev => [...prev, newUserMsg]);
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate AI thinking delay
-    setTimeout(() => {
-      let responseText = simulatedResponses.default;
-      const lowerText = text.toLowerCase();
+    try {
+      // Initialize the Gemini client
+      const ai = new GoogleGenAI({ apiKey: apiKey });
       
-      if (lowerText.includes('register') || lowerText.includes('deadline')) {
-        responseText = simulatedResponses.register;
-      } else if (lowerText.includes('research') || lowerText.includes('unbiased')) {
-        responseText = simulatedResponses.research;
-      } else if (lowerText.includes('early') || lowerText.includes('mail')) {
-        responseText = simulatedResponses.early;
-      } else if (lowerText.includes('bring') || lowerText.includes('election day')) {
-        responseText = simulatedResponses["election-day"];
-      } else if (lowerText.includes('result') || lowerText.includes('announced')) {
-        responseText = simulatedResponses.results;
-      } else {
-          responseText = "That's a great question about the election process. While I'm a simulated assistant right now, typically you'd want to check your local state election website for the most accurate information on that topic!"
-      }
+      // We pass the conversation history to provide context
+      const chatHistory = messages.filter(m => m.id !== 1).map(m => ({
+          role: m.sender === 'bot' ? 'model' : 'user',
+          parts: [{text: m.text}]
+      }));
 
+      // In the new SDK for Node/Browser, generating content:
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: [
+            ...chatHistory,
+            { role: 'user', parts: [{ text: text }] }
+        ],
+        config: {
+            systemInstruction: SYSTEM_INSTRUCTION,
+            temperature: 0.2, // Keep it factual
+        }
+      });
+
+      const responseText = response.text || "I'm sorry, I couldn't generate a response.";
       setMessages(prev => [...prev, { text: responseText, sender: 'bot', id: Date.now() + 1 }]);
+    } catch (err) {
+      console.error(err);
+      setError("Error connecting to Gemini API. Please check your API key and try again.");
+    } finally {
       setIsTyping(false);
-    }, 1200);
+    }
   };
 
   return (
@@ -76,7 +89,7 @@ export default function AssistantChat({ activePrompt, setHasInteracted }) {
         </div>
         <div>
           <h2>Election Assistant AI</h2>
-          <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Always here to help</p>
+          <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Powered by Gemini</p>
         </div>
       </div>
       
@@ -92,6 +105,12 @@ export default function AssistantChat({ activePrompt, setHasInteracted }) {
             <div className="dot"></div>
             <div className="dot"></div>
           </div>
+        )}
+        {error && (
+            <div className="message bot" style={{ color: '#fca5a5', border: '1px solid #ef4444', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                <AlertCircle size={16} />
+                {error}
+            </div>
         )}
         <div ref={messagesEndRef} />
       </div>
@@ -113,6 +132,7 @@ export default function AssistantChat({ activePrompt, setHasInteracted }) {
             placeholder="Ask about the election process..." 
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            disabled={isTyping}
           />
           <button type="submit" className="send-btn" disabled={!inputValue.trim() || isTyping}>
             <Send size={20} />

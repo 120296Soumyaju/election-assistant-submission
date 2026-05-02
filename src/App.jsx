@@ -6,6 +6,7 @@ function App() {
   const [activeStep, setActiveStep] = useState(null);
   const [activePrompt, setActivePrompt] = useState('');
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [apiKey, setApiKey] = useState('');
 
   const handleStepClick = (index, prompt) => {
     setActiveStep(index);
@@ -17,9 +18,21 @@ function App() {
 
   return (
     <div className="app-container">
-      <header>
-        <h1>Election Assistant</h1>
-        <p>Your interactive guide to the voting process</p>
+      <header className="app-header">
+        <div>
+            <h1>Election Assistant</h1>
+            <p>Your interactive guide to the voting process</p>
+        </div>
+        <div className="api-key-container">
+            <input 
+                type="password" 
+                placeholder="Enter Gemini API Key..." 
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                className="api-key-input"
+                title="Enter your Google Gemini API Key to enable the AI"
+            />
+        </div>
       </header>
 
       <main>
@@ -33,6 +46,7 @@ function App() {
         <AssistantChat 
           activePrompt={activePrompt}
           setHasInteracted={setHasInteracted}
+          apiKey={apiKey}
         />
       </aside>
     </div>
