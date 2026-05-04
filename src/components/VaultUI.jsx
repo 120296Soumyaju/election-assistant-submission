@@ -63,12 +63,14 @@ export default function VaultUI({ onUnlock, onLock }) {
   };
 
   const handleReset = () => {
-    clearVault();
-    setIsUnlocked(false);
-    setVaultExists(false);
-    onLock();
-    setApiKeyInput('');
-    alert("Vault Cleared! You can now enter your new API key.");
+    if (confirm("Are you sure you want to clear the vault? You will need to enter your API key again.")) {
+      clearVault();
+      setIsUnlocked(false);
+      setVaultExists(false);
+      onLock();
+      setApiKeyInput('');
+      window.location.reload(); // Nuclear option: Force a full page refresh
+    }
   };
 
   return (

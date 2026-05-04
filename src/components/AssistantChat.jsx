@@ -97,7 +97,10 @@ export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }
           </div>
           <div>
             <h2>VoterVault AI</h2>
-            <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{AVAILABLE_MODELS.find(m => m.id === selectedModel)?.name}</p>
+            <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              {AVAILABLE_MODELS.find(m => m.id === selectedModel)?.name}
+              {apiKey && <span style={{ opacity: 0.5 }}>• Key: {apiKey.slice(0, 7)}...</span>}
+            </p>
           </div>
         </div>
         <button 
