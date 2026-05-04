@@ -97,6 +97,11 @@ export default function VaultUI({ onUnlock, onLock }) {
                 />
               )}
               <div className="vault-btn-group">
+                {!vaultExists && apiKeyInput && (
+                  <div className="key-preview-notice">
+                    Ready to secure: <code>{apiKeyInput.slice(0, 10)}...</code>
+                  </div>
+                )}
                 <button onClick={handleVaultAction} className="vault-btn action">
                   {vaultExists ? <Unlock size={18} /> : <Lock size={18} />}
                   {vaultExists ? 'Unlock Vault' : 'Secure Vault'}
