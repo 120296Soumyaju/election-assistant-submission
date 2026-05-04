@@ -8,6 +8,7 @@ export default function VaultUI({ onUnlock, onLock }) {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [status, setStatus] = useState('idle'); // idle, connecting, ready, error
+  const [vaultExists, setVaultExists] = useState(isVaultPresent());
 
   const SIGN_MESSAGE = "Secure my Election Assistant Vault. This action will not cost any gas.";
 
@@ -35,7 +36,7 @@ export default function VaultUI({ onUnlock, onLock }) {
       const signer = await provider.getSigner();
       const signature = await signer.signMessage(SIGN_MESSAGE);
 
-      if (isVaultPresent() && !isUnlocked) {
+      if (vaultExists && !isUnlocked) {
         // Unlock existing vault
         const decrypted = decryptKey(signature);
         if (decrypted) {
@@ -53,6 +54,7 @@ export default function VaultUI({ onUnlock, onLock }) {
         encryptKey(apiKeyInput, signature);
         onUnlock(apiKeyInput);
         setIsUnlocked(true);
+        setVaultExists(true);
       }
     } catch (err) {
       console.error(err);
@@ -63,6 +65,7 @@ export default function VaultUI({ onUnlock, onLock }) {
   const handleReset = () => {
     clearVault();
     setIsUnlocked(false);
+    setVaultExists(false);
     onLock();
     setApiKeyInput('');
     alert("Vault Cleared! You can now enter your new API key.");
@@ -79,7 +82,7 @@ export default function VaultUI({ onUnlock, onLock }) {
         <div className="vault-controls">
           {!isUnlocked ? (
             <div className="vault-input-group">
-              {!isVaultPresent() && (
+              {!vaultExists && (
                 <input 
                   type="text" 
                   placeholder="Paste NEW Gemini API Key..." 
@@ -91,10 +94,10 @@ export default function VaultUI({ onUnlock, onLock }) {
               )}
               <div className="vault-btn-group">
                 <button onClick={handleVaultAction} className="vault-btn action">
-                  {isVaultPresent() ? <Unlock size={18} /> : <Lock size={18} />}
-                  {isVaultPresent() ? 'Unlock Vault' : 'Secure Vault'}
+                  {vaultExists ? <Unlock size={18} /> : <Lock size={18} />}
+                  {vaultExists ? 'Unlock Vault' : 'Secure Vault'}
                 </button>
-                {isVaultPresent() && (
+                {vaultExists && (
                   <button onClick={handleReset} className="reset-btn-small" title="Delete current vault and start over">
                     Reset
                   </button>
