@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, AlertCircle } from 'lucide-react';
-import { GoogleGenAI } from '@google/genai';
+import { Send, Bot, AlertCircle, Settings } from 'lucide-react';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const SYSTEM_INSTRUCTION = `You are an expert, non-partisan election assistant called VoterVault AI. 
 Your goal is to help users understand the US electoral process, registration deadlines, early voting, and how to research candidates. 
 Keep your answers concise, encouraging, and factual. Always direct users to official state resources or vote.gov for binding specific information.
 Do not endorse any political party or candidate.`;
+
+const AVAILABLE_MODELS = [
+  { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash (Fast)' },
+  { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro (Deep)' },
+  { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash (New)' },
+];
 
 export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }) {
   const [messages, setMessages] = useState([
@@ -14,6 +20,8 @@ export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState('');
+  const [selectedModel, setSelectedModel] = useState('gemini-1.5-flash');
+  const [showModelPicker, setShowModelPicker] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -49,26 +57,28 @@ export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }
     setIsTyping(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: apiKey.trim() });
+      const genAI = new GoogleGenerativeAI(apiKey.trim());
+      const model = genAI.getGenerativeModel({ 
+        model: selectedModel,
+        systemInstruction: SYSTEM_INSTRUCTION
+      });
 
       const chatHistory = messages.filter(m => m.id !== 1).map(m => ({
         role: m.sender === 'bot' ? 'model' : 'user',
         parts: [{ text: m.text }]
       }));
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-pro',
+      const result = await model.generateContent({
         contents: [
           ...chatHistory,
           { role: 'user', parts: [{ text }] }
         ],
-        config: {
-          systemInstruction: SYSTEM_INSTRUCTION,
+        generationConfig: {
           temperature: 0.2,
         }
       });
 
-      const responseText = response.text;
+      const responseText = result.response.text();
       setMessages(prev => [...prev, { text: responseText, sender: 'bot', id: Date.now() + 1 }]);
     } catch (err) {
       console.error('Gemini Error:', err);
@@ -81,13 +91,39 @@ export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }
   return (
     <div className="assistant-container glass glass-panel">
       <div className="chat-header">
-        <div className="bot-avatar">
-          <Bot size={20} color="white" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div className="bot-avatar">
+            <Bot size={20} color="white" />
+          </div>
+          <div>
+            <h2>VoterVault AI</h2>
+            <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>{AVAILABLE_MODELS.find(m => m.id === selectedModel)?.name}</p>
+          </div>
         </div>
-        <div>
-          <h2>VoterVault AI</h2>
-          <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>Secure Voter Guidance</p>
-        </div>
+        <button 
+          className="model-picker-toggle"
+          onClick={() => setShowModelPicker(!showModelPicker)}
+          title="Change AI Model"
+        >
+          <Settings size={18} />
+        </button>
+        
+        {showModelPicker && (
+          <div className="model-picker glass">
+            {AVAILABLE_MODELS.map(model => (
+              <button 
+                key={model.id}
+                className={`model-option ${selectedModel === model.id ? 'active' : ''}`}
+                onClick={() => {
+                  setSelectedModel(model.id);
+                  setShowModelPicker(false);
+                }}
+              >
+                {model.name}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="chat-messages">
