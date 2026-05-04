@@ -110,6 +110,19 @@ export default function VaultUI({ onUnlock, onLock }) {
                   {vaultExists ? <Unlock size={18} /> : <Lock size={18} />}
                   {vaultExists ? 'Unlock Vault' : 'Secure Vault'}
                 </button>
+                {!vaultExists && (
+                  <button 
+                    onClick={() => {
+                      const textarea = document.getElementById('vault-token-area');
+                      const key = textarea ? textarea.value.trim() : apiKeyInput.trim();
+                      if(key) onUnlock(key); else alert("Paste a key first!");
+                    }} 
+                    className="vault-btn skip"
+                    title="Use this key for this session only without MetaMask"
+                  >
+                    Use without MetaMask
+                  </button>
+                )}
                 {vaultExists && (
                   <button onClick={handleReset} className="reset-btn-small" title="Delete current vault and start over">
                     Reset
