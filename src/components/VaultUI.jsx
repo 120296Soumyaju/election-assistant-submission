@@ -31,9 +31,9 @@ export default function VaultUI({ onUnlock, onLock }) {
   };
 
   const handleVaultAction = async () => {
-    // CAPTURE the key immediately to prevent browser autofill overwriting it 
-    // while the MetaMask window is open
-    const capturedKey = apiKeyInput.trim();
+    // DIRECT DOM QUERY: Get exactly what is typed in the box right now
+    const textarea = document.getElementById('vault-token-area');
+    const capturedKey = textarea ? textarea.value.trim() : apiKeyInput.trim();
     
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
