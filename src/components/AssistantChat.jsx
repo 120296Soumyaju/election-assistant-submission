@@ -20,7 +20,7 @@ export default function AssistantChat({ activePrompt, setHasInteracted, apiKey }
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState('');
-  const [selectedModel, setSelectedModel] = useState('gemini-1.5-flash');
+  const [selectedModel, setSelectedModel] = useState('gemini-2.0-flash');
   const [showModelPicker, setShowModelPicker] = useState(false);
   const messagesEndRef = useRef(null);
 
