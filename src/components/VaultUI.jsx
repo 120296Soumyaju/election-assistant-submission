@@ -73,7 +73,7 @@ export default function VaultUI({ onUnlock, onLock }) {
       setVaultExists(false);
       onLock();
       setApiKeyInput('');
-      window.location.reload(); // Nuclear option: Force a full page refresh
+      // No reload needed, state will handle it
     }
   };
 
