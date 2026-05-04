@@ -65,6 +65,7 @@ export default function VaultUI({ onUnlock, onLock }) {
     setIsUnlocked(false);
     onLock();
     setApiKeyInput('');
+    alert("Vault Cleared! You can now enter your new API key.");
   };
 
   return (
@@ -80,11 +81,12 @@ export default function VaultUI({ onUnlock, onLock }) {
             <div className="vault-input-group">
               {!isVaultPresent() && (
                 <input 
-                  type="password" 
-                  placeholder="Paste Gemini API Key..." 
+                  type="text" 
+                  placeholder="Paste NEW Gemini API Key..." 
                   value={apiKeyInput}
                   onChange={(e) => setApiKeyInput(e.target.value)}
                   className="vault-api-input"
+                  autoComplete="off"
                 />
               )}
               <div className="vault-btn-group">
