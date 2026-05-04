@@ -31,6 +31,10 @@ export default function VaultUI({ onUnlock, onLock }) {
   };
 
   const handleVaultAction = async () => {
+    // CAPTURE the key immediately to prevent browser autofill overwriting it 
+    // while the MetaMask window is open
+    const capturedKey = apiKeyInput.trim();
+    
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
@@ -47,12 +51,12 @@ export default function VaultUI({ onUnlock, onLock }) {
         }
       } else {
         // Create new vault
-        if (!apiKeyInput) {
+        if (!capturedKey) {
           alert("Please enter a Gemini API Key to secure.");
           return;
         }
-        encryptKey(apiKeyInput, signature);
-        onUnlock(apiKeyInput);
+        encryptKey(capturedKey, signature);
+        onUnlock(capturedKey);
         setIsUnlocked(true);
         setVaultExists(true);
       }
