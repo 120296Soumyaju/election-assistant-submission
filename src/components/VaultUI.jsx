@@ -87,10 +87,17 @@ export default function VaultUI({ onUnlock, onLock }) {
                   className="vault-api-input"
                 />
               )}
-              <button onClick={handleVaultAction} className="vault-btn action">
-                {isVaultPresent() ? <Unlock size={18} /> : <Lock size={18} />}
-                {isVaultPresent() ? 'Unlock Vault' : 'Secure Vault'}
-              </button>
+              <div className="vault-btn-group">
+                <button onClick={handleVaultAction} className="vault-btn action">
+                  {isVaultPresent() ? <Unlock size={18} /> : <Lock size={18} />}
+                  {isVaultPresent() ? 'Unlock Vault' : 'Secure Vault'}
+                </button>
+                {isVaultPresent() && (
+                  <button onClick={handleReset} className="reset-btn-small" title="Delete current vault and start over">
+                    Reset
+                  </button>
+                )}
+              </div>
             </div>
           ) : (
             <div className="vault-status">

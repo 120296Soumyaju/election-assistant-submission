@@ -132,6 +132,29 @@ h1 {
   gap: 1rem;
 }
 
+.vault-btn-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.reset-btn-small {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.reset-btn-small:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
 .vault-btn {
   display: flex;
   align-items: center;
