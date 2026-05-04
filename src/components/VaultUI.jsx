@@ -84,12 +84,14 @@ export default function VaultUI({ onUnlock, onLock }) {
             <div className="vault-input-group">
               {!vaultExists && (
                 <input 
-                  type="text" 
+                  type="search" 
+                  id="vault-token-entry"
+                  name="vault-token-entry"
                   placeholder="Paste NEW Gemini API Key..." 
                   value={apiKeyInput}
                   onChange={(e) => setApiKeyInput(e.target.value)}
                   className="vault-api-input"
-                  autoComplete="off"
+                  autoComplete="new-password"
                 />
               )}
               <div className="vault-btn-group">
